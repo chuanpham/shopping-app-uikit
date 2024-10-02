@@ -20,6 +20,7 @@ extension HomeRouter: HomeRouterProtocol {
         switch route {
         case .productDetails(let product):
             let vc = ProductDetailsBuilder.make(product: product)
+            view?.title = "Home"
             view?.show(vc, sender: self)
         }
     }

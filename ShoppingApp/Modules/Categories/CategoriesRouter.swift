@@ -18,6 +18,8 @@ class CategoriesRouter: CategoriesRouterProtocol {
         switch route {
         case .detail(let category):
             let categoryDetailsVC = CategoryDetailsBuilder.make(with: category)
+            view?.title = "Categories"
+            categoryDetailsVC.title = category.name.capitalized
             view?.show(categoryDetailsVC, sender: self)
         }
     }

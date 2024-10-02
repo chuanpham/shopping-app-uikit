@@ -21,6 +21,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
         let image = UIImageView()
         image.clipsToBounds = true
         image.layer.cornerRadius = 17
+        image.layer.maskedCorners = [.layerMinXMinYCorner, .layerMaxXMinYCorner]
         return image
     }()
     
@@ -34,7 +35,7 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     }
     
     func configure(with categoryName: String) {
-        categoryNameLabel.text = categoryName
+        categoryNameLabel.text = categoryName.capitalized
         categoryImage.image = UIImage(named: categoryName)
     }
     
@@ -51,9 +52,9 @@ class CategoryCollectionViewCell: UICollectionViewCell {
     
     private func applyConstraints() {
         categoryImage.snp.makeConstraints { make in
-            make.top.leading.equalTo(self).offset(10)
-            make.trailing.equalTo(self).offset(-10)
-            make.height.equalTo(140)
+            make.top.leading.equalTo(self)
+            make.trailing.equalTo(self)
+            make.height.equalTo(200)
         }
         
         categoryNameLabel.snp.makeConstraints { make in

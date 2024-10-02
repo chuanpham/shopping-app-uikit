@@ -15,7 +15,7 @@ protocol ProductDetailsViewProtocol: AnyObject {
 
 protocol ProductDetailsPresenterProtocol: AnyObject {
     func load()
-    func addToCartButtonClicked()
+    func addToCartButtonClicked(amount: Int)
     func goToShoppingCartButtonClicked()
 }
 
@@ -29,7 +29,7 @@ enum ProductDetailsPresenterOutput {
 protocol ProductDetailsInteractorProtocol {
     var delegate: ProductDetailsInteractorDelegate? { get set }
     func load()
-    func addToCart()
+    func addToCart(amount: Int)
 }
 
 protocol ProductDetailsInteractorDelegate: AnyObject {

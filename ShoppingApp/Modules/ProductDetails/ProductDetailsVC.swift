@@ -13,6 +13,9 @@ class ProductDetailsVC: UIViewController {
     
     // MARK: - Properties
     
+    var amount: Int = 1
+    var productPrice: Double = 0.0
+    
     let productImage: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
@@ -49,6 +52,48 @@ class ProductDetailsVC: UIViewController {
         button.layer.cornerRadius = 20
         button.configuration?.title = "Add To Cart"
         return button
+    }()
+    
+    let amountDecreaseButton: UIButton = {
+        let button = UIButton()
+        button.configuration = .plain()
+        button.backgroundColor = .clear
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemGray.cgColor
+        button.layer.cornerRadius = 8
+        button.configuration?.title = "-"
+        button.tintColor = .systemGray
+        return button
+    }()
+    
+    let amountLabel: UILabel = {
+        let label = UILabel()
+        label.text = "1"
+        return label
+    }()
+    
+    let amountIncreaseButton: UIButton = {
+        let button = UIButton()
+        button.configuration = .plain()
+        button.backgroundColor = .clear
+        button.layer.borderWidth = 1
+        button.layer.borderColor = UIColor.systemGreen.cgColor
+        button.layer.cornerRadius = 8
+        button.configuration?.title = "+"
+        button.tintColor = .systemGreen
+        return button
+    }()
+    
+    let amountStack: UIStackView = {
+        let stack = UIStackView()
+        stack.distribution = .equalSpacing
+        return stack
+    }()
+    
+    let estimatedPrice: UILabel = {
+        let label = UILabel()
+        label.font = .boldSystemFont(ofSize: 17)
+        return label
     }()
     
     let stackView: UIStackView = {
@@ -88,18 +133,44 @@ class ProductDetailsVC: UIViewController {
         stackView.addArrangedSubview(productRatingView)
         stackView.addArrangedSubview(price)
         stackView.addArrangedSubview(details)
+        
+        stackView.addArrangedSubview(amountStack)
+        amountStack.addArrangedSubview(amountDecreaseButton)
+        amountStack.addArrangedSubview(amountLabel)
+        amountStack.addArrangedSubview(amountIncreaseButton)
+        amountStack.addArrangedSubview(estimatedPrice)
+        
         stackView.addArrangedSubview(addToCartButton)
+        
         view.addSubview(spinner)
         
-        stackView.setCustomSpacing(20, after: details)
+        amountDecreaseButton.addTarget(self, action: #selector(amountDecreaseButtonClicked), for: .touchUpInside)
+        amountIncreaseButton.addTarget(self, action: #selector(amountIncreaseButtonClicked), for: .touchUpInside)
+        
+        //stackView.setCustomSpacing(20, after: amountStack)
+        
+        stackView.setCustomSpacing(100, after: addToCartButton)
         
         addToCartButton.addTarget(self, action: #selector(addToCartButtonClicked), for: .touchUpInside)
         
         applyConstraints()
     }
     
+    @objc func amountDecreaseButtonClicked() {
+        if amount == 1 { return }
+        amount -= 1
+        amountLabel.text = String(amount)
+        estimatedPrice.text = "$" + String(format: "%.2f", productPrice * Double(amount))
+    }
+    
+    @objc func amountIncreaseButtonClicked() {
+        amount += 1
+        amountLabel.text = String(amount)
+        estimatedPrice.text = "$" + String(format: "%.2f", productPrice * Double(amount))
+    }
+    
     @objc private func addToCartButtonClicked() {
-        presenter?.addToCartButtonClicked()
+        presenter?.addToCartButtonClicked(amount: amount)
     }
     
     // MARK: - Constraints
@@ -118,6 +189,20 @@ class ProductDetailsVC: UIViewController {
         
         productImage.snp.makeConstraints { make in
             make.height.equalTo(350)
+        }
+        
+        amountStack.snp.makeConstraints { make in
+            make.width.equalToSuperview().multipliedBy(0.6)
+            make.centerX.equalToSuperview()
+            make.height.equalTo(50)
+        }
+        
+        amountDecreaseButton.snp.makeConstraints { make in
+            make.width.equalTo(50)
+        }
+        
+        amountIncreaseButton.snp.makeConstraints { make in
+            make.width.equalTo(50)
         }
         
         addToCartButton.snp.makeConstraints { make in
@@ -141,8 +226,10 @@ extension ProductDetailsVC: ProductDetailsViewProtocol {
             }
         case .showProductDetails(let product):
             name.text = product.name
+            productPrice = product.price
             productRatingView.configure(rating: product.rate, ratingCount: product.ratingCount)
             price.text = "$" + String(format: "%.2f", product.price)
+            estimatedPrice.text = "$" + String(format: "%.2f", product.price)
             details.text = product.description
             
             if let url = URL(string: product.image) {

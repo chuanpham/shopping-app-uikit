@@ -23,8 +23,8 @@ extension ProductDetailsInteractor: ProductDetailsInteractorProtocol {
         delegate?.handleOutput(.showProductDetails(product))
     }
     
-    func addToCart() {
-        CoreDataManager.shared.saveProductToCart(product: product, amount: 1)
+    func addToCart(amount: Int) {
+        CoreDataManager.shared.saveProductToCart(product: product, amount: amount)
         delegate?.handleOutput(.showAddToCartSuccess)
     }
 }

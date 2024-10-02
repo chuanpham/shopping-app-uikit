@@ -25,8 +25,8 @@ extension ProductDetailsPresenter: ProductDetailsPresenterProtocol {
         interactor.load()
     }
     
-    func addToCartButtonClicked() {
-        interactor.addToCart()
+    func addToCartButtonClicked(amount: Int) {
+        interactor.addToCart(amount: amount)
     }
     
     func goToShoppingCartButtonClicked() {
